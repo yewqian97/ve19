@@ -1,0 +1,42 @@
+/*@!Encoding:1252*/
+// Yew Qi An HB17021
+Includes
+{
+}
+
+variables
+{
+  msTimer myTimer;                      //create Timer
+int x = 0;                     	        
+}
+
+on start
+{
+  $EF_Actv = 0;                         //off warnblinker    
+}
+
+on signal EF_Sw_Psd                  
+{
+  x ++;                                 //increase counter variable 
+  
+  if (x == 2)                      
+  {
+   setTimerCyclic(myTimer, 340);        //timer start      
+   @Status_Warnblinker=1;	              
+  }
+ 
+
+  if (x == 4)			         							 
+  {
+    cancelTimer(myTimer);	              //stop the timer   
+     $EF_Actv = 0;	                    //switch off    
+     @Status_Warnblinker=0;	            //set variable
+
+   x = 0;                               
+  }
+}
+  
+on timer myTimer                        //define the name 
+{
+    $EF_Actv =! $EF_Actv;                 
+}

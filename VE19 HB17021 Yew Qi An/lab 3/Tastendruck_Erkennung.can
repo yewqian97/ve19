@@ -1,0 +1,38 @@
+/*@!Encoding:1252*/
+//TAN SIN CHUEN HB17016
+Includes
+{
+}
+
+variables
+{
+  msTimer myTimer;                       // Create Timer_Variable (Hazard lights)
+  int x = 0;                     	       // Counter Variable 
+}
+
+on start
+{
+  $EF_Actv = 0;                          // Warnblinker_LED off at the beginning    
+} 
+
+on signal EF_Sw_Psd                  
+{
+  x ++;                                  // Increase the counter variable 
+  if (x == 2)                      
+  {
+   setTimerCyclic(myTimer, 300);         // Start timer with frequency of 2.94Hz      
+  }
+ 
+  if (x == 4)			         							 
+  {
+    cancelTimer(myTimer);	              // Stop the timer   
+     $EF_Actv = 1;	                    // Turn off hazard light    
+    
+   x = 0;                               // Reset the counter
+  }
+}
+  
+on timer myTimer                        // Define the timer function 
+{
+    $EF_Actv = $EF_Actv;                 
+}

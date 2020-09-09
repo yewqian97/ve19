@@ -1,0 +1,66 @@
+/*@!Encoding:1252*/
+//Yew Qi An HB17021
+Includes {}
+
+Variables
+{
+  msTimer myTimer;                        //define time 
+  int x = 0;                              //hazard light counter  
+  int y = 0;                              //heat seat counter
+}
+
+on start
+{
+  $EF_Actv = 0;                          //LED off
+  $ISw_Stat = 0x4;                       //turn ignition on
+  $SeatHt_FL_Stat =0;                    //heat seat off
+}
+
+on signal EF_Sw_Psd                   
+{
+  x ++;                                  
+  if (x == 2)                                     
+  {
+    @Status_Warnblinker = 1;             //set variable to 1
+    setTimerCyclic(myTimer, 340);        //timer start at 2.94Hz  
+  }
+  
+  if (x == 4)          
+  {
+   @Status_Warnblinker = 0;              //set variable to 0
+    cancelTimer(myTimer);                //cancel timer
+    $EF_Actv = 0;                        //turn off hazard lights
+  
+   x = 0;                                //reset
+  }
+}
+ on timer myTimer                        //define timer
+  {
+    $EF_Actv =! $EF_Actv;                
+  }
+
+on signal SeatHt_FL_Pos_Rq               
+    {
+      y++;                               
+     
+      if(y==2)                        
+      {
+        $SeatHt_FL_Stat=3;               //on 3 led
+      }
+      
+       if(y==4)                 
+      {
+        $SeatHt_FL_Stat=2;               //on 2 led
+      }
+      
+       if(y==6)                 
+      {
+        $SeatHt_FL_Stat=1;               //one 1 led
+      }
+      
+       if(y==8)                 
+      {
+        $SeatHt_FL_Stat=0;               //off led
+        y=0;                             //reset
+      }
+    }
